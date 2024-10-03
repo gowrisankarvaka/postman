@@ -6,7 +6,7 @@ on:
       - generate-report  # Run on pushes to the generate-report branch
   pull_request:
     branches:
-      - generate-report  # Run on pull requests targeting the generate-report branch 
+      - generate-report  # Run on pull requests targeting the generate-report branch
 
 jobs:
   postman_tests:
