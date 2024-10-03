@@ -25,4 +25,4 @@ jobs:
 
       # Step 3: Install dependencies (Newman)
       - name: Install Newman
-        run: npm install
+        run: npm install -g newman
