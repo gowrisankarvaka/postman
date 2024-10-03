@@ -34,6 +34,7 @@ jobs:
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
-          --r htmlextra results.html
+          --reporters cli,junit \
+          --reporter-junit-export results.xml
 
            
