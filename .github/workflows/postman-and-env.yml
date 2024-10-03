@@ -30,10 +30,9 @@ jobs:
       # Step 4: Run the Postman collection
       - name: Run Postman Collection and Generate Report
         run: |
-          newman run postman/sys-api-oauth.postman_collection.json \
+          npm newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
-          --reporters cli,junit \
-          --reporter-junit-export results.xml
+        
 
            
