@@ -26,15 +26,12 @@ jobs:
       # Step 3: Install dependencies (Newman)
       - name: Install Newman
         run: npm install -g newman
+
+      # Step 4: Run the Postman collection
       - name: Run Postman Collection
         run: |
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --reporters cli,junit \
           --reporter-junit-export results.xml
-            # Step 5: Upload test results as artifacts (optional)
-      - name: Upload JUnit Test Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: newman-results
-          path: results.xml
+           
