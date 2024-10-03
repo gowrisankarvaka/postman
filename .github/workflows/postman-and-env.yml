@@ -3,7 +3,7 @@ name: Run Postman Collection
 on:
   push:
     branches:
-      - main  # Run on pushes to the main branch
+      - postman-with-env-and-collection  # Run on pushes to the main branch
   pull_request:
     branches:
       - main  # Run on pull requests targeting the main branch
