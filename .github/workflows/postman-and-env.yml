@@ -3,10 +3,10 @@ name: Run Postman Collection
 on:
   push:
     branches:
-      - demo  # Run on pushes to the main branch
+      - postman-with-env-and-collection  # Run on pushes to the main branch
   pull_request:
     branches:
-      - demo  # Run on pull requests targeting the main branch
+      - postmna-with-env-and-collection  # Run on pull requests targeting the main branch
 
 jobs:
   postman_tests:
@@ -28,6 +28,7 @@ jobs:
         run: npm install -g newman
       - name: Run Postman Collection
         run: |
-          npx newman run sys-api-oauth.postman_collection.json \
+          npx newman run postman/sys-api-oauth.postman_collection.json \
+          --environment postman/sys-api-oauth.postman_environment.json \
           --reporters cli,junit \
           --reporter-junit-export results.xml
