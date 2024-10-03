@@ -30,7 +30,8 @@ jobs:
       # Step 4: Run Postman Collection
       - name: Run Postman Collection
         run: |
-          npx newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html \
+          npx newman run postman/sys-api-oauth.postman_collection.json \
+          -r html --reporter-html-export newman-report.html \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
 
