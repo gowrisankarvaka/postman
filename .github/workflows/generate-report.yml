@@ -15,11 +15,11 @@ jobs:
     steps:
       # Step 1: Check out the repository
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Step 2: Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v2 
+        uses: actions/setup-node@v3
         with:
           node-version: '16'  # Specify the version of Node.js
 
@@ -33,11 +33,15 @@ jobs:
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
+          --reporters cli,html,junit \
+          --reporter-html-export newman/newman-report.html \
+          --reporter-junit-export newman/newman-report.xml
 
+      # Step 5: Upload HTML Report as an Artifact (Updated to v3)
       - name: Upload HTML Report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: newman-html-report
-          path: postman/newman-report.html
+          path: newman/newman-report.html
 
            
