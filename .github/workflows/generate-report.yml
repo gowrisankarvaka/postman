@@ -33,7 +33,6 @@ jobs:
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
-          --reporters cli,html,junit \
           --reporter-html-export newman/newman-report.html \
           --reporter-junit-export newman/newman-report.xml
 
@@ -42,6 +41,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: newman-html-report
-          path: newman/newman-report.html
+          path: postman/newman-report.html
 
            
