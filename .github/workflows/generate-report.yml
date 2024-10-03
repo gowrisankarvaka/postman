@@ -28,17 +28,16 @@ jobs:
         run: npm install -g newman newman-reporter-html
 
       # Step 4: Run the Postman collection
-      - name: Run Postman Collection and Generate Report
+      - name: Run Postman Collection
         run: |
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
 
       # Step 5: Generate Report
-      - name: Run Postman Collection
+      - name: Generate Report
         run: |
-          npx newman run postman/sys-api-oauth.postman_collection.json \
-          -r html --reporter-html-export newman-report.html \
+          newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
           
@@ -48,3 +47,4 @@ jobs:
         with:
           name: newman-report
           path: newman-report.html
+          
