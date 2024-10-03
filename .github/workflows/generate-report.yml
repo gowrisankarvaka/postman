@@ -37,9 +37,7 @@ jobs:
       # Step 5: Generate Report
       - name: Generate Report
         run: |
-          newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html \
-          --environment postman/sys-api-oauth.postman_environment.json \
-          --iteration-count 1 \  # Specify the number of iterations
+          newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html 
           
       # Step 6: Upload Report
       - name: Upload report
