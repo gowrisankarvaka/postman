@@ -37,7 +37,7 @@ jobs:
       # Step 5: Generate Report
       - name: Generate Report
         run: |
-          newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html 
+          npx newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html 
           
       # Step 6: Upload Report
       - name: Upload report
