@@ -32,3 +32,9 @@ jobs:
           --environment postman/sys-api-oauth.postman_environment.json \
           --reporters cli,junit \
           --reporter-junit-export results.xml
+            # Step 5: Upload test results as artifacts (optional)
+      - name: Upload JUnit Test Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: newman-results
+          path: results.xml
