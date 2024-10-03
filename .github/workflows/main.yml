@@ -1,0 +1,36 @@
+name: Run Postman Collection
+
+on:
+  push:
+    branches:
+      - main  # Run on pushes to the main branch
+  pull_request:
+    branches:
+      - main  # Run on pull requests targeting the main branch
+
+jobs:
+  postman_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Specify the version of Node.js
+
+      # Step 3: Install dependencies (Newman)
+      - name: Install Newman
+        run: npm install
+
+      # Step 4: Run the Postman collection
+      - name: Run Postman Collection
+        run: |
+          npx newman run postman/collection.json \
+          --environment postman/environment.json \
+          --reporters cli,junit \
+          --reporter-junit-export results.xml
