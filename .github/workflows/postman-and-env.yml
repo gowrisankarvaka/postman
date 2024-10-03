@@ -30,7 +30,6 @@ jobs:
       # Step 4: Run the Postman collection
       - name: Run Postman Collection and Generate Report
         run: |
-          npm install -g newman-reporter-htmlextra \
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
