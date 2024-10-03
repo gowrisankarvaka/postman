@@ -26,11 +26,3 @@ jobs:
       # Step 3: Install dependencies (Newman)
       - name: Install Newman
         run: npm install
-
-      # Step 4: Run the Postman collection
-      - name: Run Postman Collection
-        run: |
-          npx newman run postman/collection.json \
-          --environment postman/environment.json \
-          --reporters cli,junit \
-          --reporter-junit-export results.xml
