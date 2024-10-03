@@ -3,10 +3,10 @@ name: Run Postman Collection
 on:
   push:
     branches:
-      - postman-with-env-and-collection  # Run on pushes to the main branch
+      - postman-with-env-and-collection  # Run on pushes to the postman-with-env-and-collection branch
   pull_request:
     branches:
-      - postmna-with-env-and-collection  # Run on pull requests targeting the main branch
+      - postmna-with-env-and-collection  # Run on pull requests targeting the postman-with-env-and-collection branch
 
 jobs:
   postman_tests:
