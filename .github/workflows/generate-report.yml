@@ -24,23 +24,36 @@ jobs:
           node-version: '16'  # Specify the version of Node.js
 
       # Step 3: Install dependencies (Newman)
-      - name: Install Newman
-        run: npm install -g newman
+      # - name: Install Newman
+      #   run: npm install -g newman
 
-      # Step 4: Run the Postman collection
-      - name: Run Postman Collection and Generate Report
+      # # Step 4: Run the Postman collection
+      # - name: Run Postman Collection and Generate Report
+      #   run: |
+      #     npx newman run postman/sys-api-oauth.postman_collection.json \
+      #     --environment postman/sys-api-oauth.postman_environment.json \
+      #     --iteration-count 1 \  # Specify the number of iterations
+      #     --reporter-html-export newman/newman-report.html \
+      #     --reporter-junit-export newman/newman-report.xml
+
+      # # Step 5: Upload HTML Report as an Artifact (Updated to v3)
+      # - name: Upload HTML Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: newman-html-report
+      #     path: postman/newman-report.html
+
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-html
+
+      - name: Run Postman Collection
         run: |
-          npx newman run postman/sys-api-oauth.postman_collection.json \
+          newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
-          --reporter-html-export newman/newman-report.html \
-          --reporter-junit-export newman/newman-report.xml
-
-      # Step 5: Upload HTML Report as an Artifact (Updated to v3)
-      - name: Upload HTML Report
-        uses: actions/upload-artifact@v3
+          
+      - name: Upload report
+        uses: actions/upload-artifact@v2
         with:
-          name: newman-html-report
-          path: postman/newman-report.html
-
-           
+          name: newman-report
+          path: newman-report.html
