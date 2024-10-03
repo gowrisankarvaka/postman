@@ -1,0 +1,2095 @@
+{
+	"info": {
+		"_postman_id": "1939c296-6949-4bbe-8184-18908eeea5bb",
+		"name": "sys-api-oauth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32483828"
+	},
+	"item": [
+		{
+			"name": "client-1 creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Client added successfully\", function () {\r",
+							"     pm.expect(pm.response.text()).to.eql(\"Client ## kavitha_1 ## added successfully\");\r",
+							"    pm.expect(pm.response.code).to.eql(200); // Ensure status code is 200\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Check if the body is in JSON format\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientID\": \"kavitha_1\",\r\n    \"clientSecret\": \"Katta\",\r\n    \"ConsumerId\": \"A0000000-0000-0000-0000-000000000001\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/clients",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-1 token generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.collectionVariables.set(\"client_1_token\", pm.response.json().access_token)\r",
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_1",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client_1 Deletion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Client Deleted successfully\", function () {\r",
+							"    pm.expect(pm.response.text()).to.eql(\"Client ## kavitha_1 ## removed successfully\");\r",
+							"    pm.expect(pm.response.code).to.eql(200); // Ensure status code is 200\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/clients/kavitha_1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients",
+						"kavitha_1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleted client token generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"Server Error\");\r",
+							"    pm.expect(pm.response.code).to.eql(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Client is not registered\", function () {\r",
+							"    let responseBody = pm.response.json(); // Parse the JSON response\r",
+							"    pm.expect(responseBody).to.have.property('message');\r",
+							"    pm.expect(pm.response.code).to.eql(500); // Ensure status code is 500\r",
+							"    pm.response.to.have.status(\"Server Error\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_1",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleted client token validation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"errormessage\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"errormessage\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Client is not registered\", function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema);\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{client_1_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/authorize",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-2 creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Client added successfully\", function () {\r",
+							"     pm.expect(pm.response.text()).to.eql(\"Client ## kavitha_2 ## added successfully\");\r",
+							"    pm.expect(pm.response.code).to.eql(200); // Ensure status code is 200\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Check if the body is in JSON format\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientID\": \"kavitha_2\",\r\n    \"clientSecret\": \"Katta\",\r\n    \"ConsumerId\": \"A0000000-0000-0000-0000-000000000002\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/clients",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Client added successfully\", function () {\r",
+							"     pm.expect(pm.response.text()).to.eql(\"Client ## kavitha_3 ## added successfully\");\r",
+							"    pm.expect(pm.response.code).to.eql(200); // Ensure status code is 200\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Check if the body is in JSON format\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientID\": \"kavitha_3\",\r\n    \"clientSecret\": \"Katta\",\r\n    \"ConsumerId\": \"A0000000-0000-0000-0000-000000000003\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/clients",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-4 creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Client added successfully\", function () {\r",
+							"     pm.expect(pm.response.text()).to.eql(\"Client ## kavitha_4 ## added successfully\");\r",
+							"    pm.expect(pm.response.code).to.eql(200); // Ensure status code is 200\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Check if the body is in JSON format\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientID\": \"kavitha_4\",\r\n    \"clientSecret\": \"Katta\",\r\n    \"ConsumerId\": \"A0000000-0000-0000-0000-000000000004\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/clients",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "creating duplicate client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Client added successfully\", function () {\r",
+							"    let responseBody = pm.response.json(); // Parse the JSON response\r",
+							"    pm.expect(responseBody).to.have.property('errormessage');\r",
+							"    pm.expect(pm.response.code).to.eql(200); // Ensure status code is 200\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Check if the body is in JSON format\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientID\": \"kavitha_4\",\r\n    \"clientSecret\": \"Katta\",\r\n    \"ConsumerId\": \"A0000000-0000-0000-0000-000000000001\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/clients",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-2 token generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.collectionVariables.set(\"Token 1\", pm.response.json().access_token)\r",
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_2",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.collectionVariables.set(\"Token 1\", pm.response.json().access_token)\r",
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-4 token generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "kavitha_4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client token generation using wrong Id and Secret",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"Server Error\");\r",
+							"    pm.expect(pm.response.code).to.eql(500) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"message\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"message\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Client is not registered\", function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"    pm.expect(pm.response.code).to.eql(500); // Ensure status code is 500\r",
+							"    pm.response.to.have.status(\"Server Error\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavith",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "invalid client Deletion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"Server Error\");\r",
+							"    pm.expect(pm.response.code).to.eql(500) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"message\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"message\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Client is not registered\", function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"    pm.expect(pm.response.code).to.eql(500); // Ensure status code is 500\r",
+							"    pm.response.to.have.status(\"Server Error\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/clients/kavitha",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"clients",
+						"kavitha"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-1 generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.collectionVariables.set(\"Token 2\", pm.response.json().access_token)\r",
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-2 generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-3 generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-4 generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-5 generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-1 validation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"scope\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"client_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"ConsumerId\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"expires_in\",\r",
+							"    \"scope\",\r",
+							"    \"client_id\",\r",
+							"    \"ConsumerId\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{Token 1}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/authorize",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-2 validation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"scope\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"client_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"ConsumerId\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"expires_in\",\r",
+							"    \"scope\",\r",
+							"    \"client_id\",\r",
+							"    \"ConsumerId\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{Token 2}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/authorize",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-6 generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200) \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"access_token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"expires_in\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"token_type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"access_token\",\r",
+							"    \"expires_in\",\r",
+							"    \"token_type\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var output= tv4.validateResult(pm.response.json(), schema)\r",
+							"    pm.expect(output.valid).to.be.true;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "kavitha_3",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "Katta",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "grant_type",
+						"value": "CLIENT_CREDENTIALS",
+						"type": "text"
+					},
+					{
+						"key": "client_id",
+						"value": "10d847d0beda4262a583a7fc3e5cf797",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "400E1320f85E40A595a333570a4EB1e2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client-3 token-1 validation after generateing 6th token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(pm.collectionVariables.get(\"Token 1\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code name has string\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 5000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"errormessage\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"errormessage\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"pm.test('Details of registered client', function () {\r",
+							"    var outputs= tv4.validateResult(pm.response.json(), schema );\r",
+							"    pm.expect(outputs.valid).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{Token 2}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/oauth/authorize",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"oauth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "client_1_token",
+			"value": ""
+		},
+		{
+			"key": "Token 1",
+			"value": ""
+		},
+		{
+			"key": "Token 2",
+			"value": ""
+		}
+	]
+}
