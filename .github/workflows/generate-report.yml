@@ -33,11 +33,13 @@ jobs:
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
+          --reporters cli,html \
+          --reporter-html-export newman-report.html
 
-      # Step 5: Generate Report
-      - name: Generate Report
-        run: |
-          npx newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html 
+      # # Step 5: Generate Report
+      # - name: Generate Report
+      #   run: |
+      #     npx newman run postman/sys-api-oauth.postman_collection.json -r html --reporter-html-export newman-report.html 
           
       # Step 6: Upload Report
       - name: Upload report
