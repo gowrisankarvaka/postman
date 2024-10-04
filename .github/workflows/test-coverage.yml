@@ -3,7 +3,7 @@ name: Run Postman Collection with HTML Report and Coverage Check
 on:
   push:
     branches:
-      - test-coverage  # Run on pushes to the test-coverage branch
+      - test-coverage  # Run on pushes to the main branch
   pull_request:
     branches:
       - test-coverage  # Run on pull requests targeting the main branch
@@ -27,29 +27,31 @@ jobs:
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
 
-      # Step 4: Run the Postman collection and generate HTML report
-      - name: Run Postman Collection and Generate HTML Report
+      # Step 4: Run the Postman collection and generate both JSON and HTML reports
+      - name: Run Postman Collection and Generate Reports
         run: |
           npx newman run postman/sys-api-oauth.postman_collection.json \
           --environment postman/sys-api-oauth.postman_environment.json \
-          --reporters cli,html \
-          --reporter-html-export newman/newman-report.html \
-          --reporter-cli-no-failures # Avoids exit on failures, so we can inspect
+          --reporters cli,json,html \
+          --reporter-json-export newman/newman-report.json \
+          --reporter-html-export newman/newman-report.html
 
-      # Step 5: Calculate Test Coverage Based on Newman CLI Results
+      # Step 5: Calculate Test Coverage Based on Newman JSON Report
       - name: Calculate Test Coverage
         id: coverage
         run: |
-          TOTAL_TESTS=$(npx newman run postman/sys-api-oauth.postman_collection.json \
-            --environment postman/sys-api-oauth.postman_environment.json \
-            --reporters cli,json --reporter-json-export newman/newman-temp-report.json \
-            | grep 'executed' | awk '{print $1}') 
-          
-          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman/newman-temp-report.json)
-          
+          # Parse the Newman JSON report and calculate test coverage
+          TOTAL_TESTS=$(jq '.run.stats.tests.total' newman/newman-report.json)
+          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman/newman-report.json)
+
+          if [ "$TOTAL_TESTS" == "null" ] || [ "$PASSED_TESTS" == "null" ]; then
+            echo "Error: Failed to extract test stats from the Newman report."
+            exit 1
+          fi
+
           # Calculate coverage percentage
           COVERAGE=$(echo "scale=2; ($PASSED_TESTS / $TOTAL_TESTS) * 100" | bc)
-          
+
           echo "Total Tests: $TOTAL_TESTS"
           echo "Passed Tests: $PASSED_TESTS"
           echo "Coverage: $COVERAGE%"
@@ -75,5 +77,6 @@ jobs:
         run: |
           echo "Deploying application..."
           # Add your deployment commands here
+
 
           
