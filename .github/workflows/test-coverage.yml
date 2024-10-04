@@ -1,0 +1,71 @@
+name: Run Postman Collection with Coverage Check
+
+on:
+  push:
+    branches:
+      - test-coverag  # Run on pushes to the test-coverage branch
+  pull_request:
+    branches:
+      - test-coverag  # Run on pull requests targeting the test-coverage branch
+
+jobs:
+  postman_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Step 3: Install dependencies (Newman)
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-html
+
+      # Step 4: Run the Postman collection and generate JSON report
+      - name: Run Postman Collection
+        run: |
+          npx newman run postman/sys-api-oauth.postman_collection.json \
+          --environment postman/sys-api-oauth.postman_environment.json \
+       
+      # Step 5: Calculate Test Coverage (Assuming 80% threshold)
+      - name: Calculate Test Coverage
+        id: coverage
+        run: |
+          # Parse the Newman JSON report and calculate coverage
+          TOTAL_TESTS=$(jq '.run.stats.tests.total' newman-report.json)
+          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman-report.json)
+          COVERAGE=$(echo "scale=2; ($PASSED_TESTS / $TOTAL_TESTS) * 100" | bc)
+
+          echo "Total Tests: $TOTAL_TESTS"
+          echo "Passed Tests: $PASSED_TESTS"
+          echo "Coverage: $COVERAGE%"
+
+          # Fail the workflow if coverage is less than 80%
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Test coverage is below 80% ($COVERAGE%)"
+            exit 1
+          else
+            echo "Test coverage is above 80% ($COVERAGE%)"
+          fi
+
+      # Step 6: Upload JSON Report as an Artifact
+      - name: Upload JSON Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: newman-json-report
+          path: newman-report.json
+
+      # Step 7: Deploy Only if Coverage is Greater Than 80%
+      - name: Deploy Application
+        if: success()
+        run: |
+          echo "Deploying application..."
+          # Add your deployment commands here
+
+          
