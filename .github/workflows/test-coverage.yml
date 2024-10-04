@@ -1,12 +1,12 @@
-name: Run Postman Collection with Coverage Check
+name: Run Postman Collection with HTML Report and Coverage Check
 
 on:
   push:
     branches:
-      - test-coverage  # Run on pushes to the test-coverage branch
+      - test-coverage  # Run on pushes to the main branch
   pull_request:
     branches:
-      - test-coverage  # Run on pull requests targeting the test-coverage branch
+      - test-coverage  # Run on pull requests targeting the main branch
 
 jobs:
   postman_tests:
@@ -23,47 +23,33 @@ jobs:
         with:
           node-version: '16'
 
-      # Step 3: Install dependencies (Newman)
+      # Step 3: Install dependencies (Newman and HTML Reporter)
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
 
-      # Step 4: Run the Postman collection and generate JSON report
-      - name: Run Postman Collection and Generate Report
+      # Step 4: Run the Postman collection and generate HTML report
+      - name: Run Postman Collection and Generate HTML Report
         run: |
           npx newman run postman/sys-api-oauth.postman_collection.json \
-          -r html --reporter-html-export newman-report.html \
           --environment postman/sys-api-oauth.postman_environment.json \
-          --iteration-count 1 \  # Specify the number of iterations
-      
-      # Step 6: Upload Report
-      - name: Upload report
-        uses: actions/upload-artifact@v3
-        with:
-          name: newman-report
-          path: newman-report.html
+          --reporters cli,html \
+          --reporter-html-export newman/newman-report.html \
+          --reporter-cli-no-failures # Avoids exit on failures, so we can inspect
 
-          
-      # Step 5: Check if the JSON report was generated
-      - name: List current directory contents (debug)
-        run: ls -la
-
-      # Step 6: Verify that the JSON report file exists
-      - name: Check for newman-report.json file
-        run: |
-          if [ ! -f "newman-report.html" ]; then
-            echo "newman-report.html not found!"
-            exit 1
-          fi 
-          
-      # Step 5: Calculate Test Coverage (Assuming 80% threshold)
+      # Step 5: Calculate Test Coverage Based on Newman CLI Results
       - name: Calculate Test Coverage
         id: coverage
         run: |
-          # Parse the Newman JSON report and calculate coverage
-          TOTAL_TESTS=$(jq '.run.stats.tests.total' newman-report.html)
-          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman-report.html)
+          TOTAL_TESTS=$(npx newman run postman/sys-api-oauth.postman_collection.json \
+            --environment postman/sys-api-oauth.postman_environment.json \
+            --reporters cli,json --reporter-json-export newman/newman-temp-report.json \
+            | grep 'executed' | awk '{print $1}') 
+          
+          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman/newman-temp-report.json)
+          
+          # Calculate coverage percentage
           COVERAGE=$(echo "scale=2; ($PASSED_TESTS / $TOTAL_TESTS) * 100" | bc)
-
+          
           echo "Total Tests: $TOTAL_TESTS"
           echo "Passed Tests: $PASSED_TESTS"
           echo "Coverage: $COVERAGE%"
@@ -76,7 +62,12 @@ jobs:
             echo "Test coverage is above 80% ($COVERAGE%)"
           fi
 
- 
+      # Step 6: Upload HTML Report as an Artifact
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: newman-html-report
+          path: newman/newman-report.html
 
       # Step 7: Deploy Only if Coverage is Greater Than 80%
       - name: Deploy Application
