@@ -3,7 +3,7 @@ name: Run Postman Collection with HTML Report and Coverage Check
 on:
   push:
     branches:
-      - test-coverage  # Run on pushes to the main branch
+      - test-coverage  # Run on pushes to the test-coverage branch
   pull_request:
     branches:
       - test-coverage  # Run on pull requests targeting the main branch
