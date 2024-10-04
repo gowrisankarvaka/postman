@@ -50,8 +50,8 @@ jobs:
       # Step 6: Verify that the JSON report file exists
       - name: Check for newman-report.json file
         run: |
-          if [ ! -f "newman-report.json" ]; then
-            echo "newman-report.json not found!"
+          if [ ! -f "newman-report.html" ]; then
+            echo "newman-report.html not found!"
             exit 1
           fi 
           
@@ -60,8 +60,8 @@ jobs:
         id: coverage
         run: |
           # Parse the Newman JSON report and calculate coverage
-          TOTAL_TESTS=$(jq '.run.stats.tests.total' newman-report.json)
-          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman-report.json)
+          TOTAL_TESTS=$(jq '.run.stats.tests.total' newman-report.html)
+          PASSED_TESTS=$(jq '.run.stats.tests.passed' newman-report.html)
           COVERAGE=$(echo "scale=2; ($PASSED_TESTS / $TOTAL_TESTS) * 100" | bc)
 
           echo "Total Tests: $TOTAL_TESTS"
