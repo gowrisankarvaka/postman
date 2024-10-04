@@ -41,7 +41,20 @@ jobs:
         with:
           name: newman-report
           path: newman-report.html
-       
+
+          
+      # Step 5: Check if the JSON report was generated
+      - name: List current directory contents (debug)
+        run: ls -la
+
+      # Step 6: Verify that the JSON report file exists
+      - name: Check for newman-report.json file
+        run: |
+          if [ ! -f "newman-report.json" ]; then
+            echo "newman-report.json not found!"
+            exit 1
+          fi 
+          
       # Step 5: Calculate Test Coverage (Assuming 80% threshold)
       - name: Calculate Test Coverage
         id: coverage
