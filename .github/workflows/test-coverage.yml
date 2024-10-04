@@ -3,10 +3,10 @@ name: Run Postman Collection with HTML Report and Coverage Check
 on:
   push:
     branches:
-      - test-coverage  # Run on pushes to the main branch
+      - main  # Run on pushes to the main branch
   pull_request:
     branches:
-      - test-coverage  # Run on pull requests targeting the main branch
+      - main  # Run on pull requests targeting the main branch
 
 jobs:
   postman_tests:
@@ -36,7 +36,13 @@ jobs:
           --reporter-json-export newman/newman-report.json \
           --reporter-html-export newman/newman-report.html
 
-      # Step 5: Calculate Test Coverage Based on Newman JSON Report
+      # Step 5: Output JSON report content (Debugging)
+      - name: Output newman-report.json for Debugging
+        run: |
+          echo "Newman JSON Report Contents:"
+          cat newman/newman-report.json
+
+      # Step 6: Calculate Test Coverage Based on Newman JSON Report
       - name: Calculate Test Coverage
         id: coverage
         run: |
@@ -64,19 +70,16 @@ jobs:
             echo "Test coverage is above 80% ($COVERAGE%)"
           fi
 
-      # Step 6: Upload HTML Report as an Artifact
+      # Step 7: Upload HTML Report as an Artifact
       - name: Upload HTML Report
         uses: actions/upload-artifact@v3
         with:
           name: newman-html-report
           path: newman/newman-report.html
 
-      # Step 7: Deploy Only if Coverage is Greater Than 80%
+      # Step 8: Deploy Only if Coverage is Greater Than 80%
       - name: Deploy Application
         if: success()
         run: |
           echo "Deploying application..."
           # Add your deployment commands here
-
-
-          
