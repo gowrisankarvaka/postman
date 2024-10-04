@@ -34,6 +34,13 @@ jobs:
           -r html --reporter-html-export newman-report.html \
           --environment postman/sys-api-oauth.postman_environment.json \
           --iteration-count 1 \  # Specify the number of iterations
+      
+      # Step 6: Upload Report
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: newman-report
+          path: newman-report.html
        
       # Step 5: Calculate Test Coverage (Assuming 80% threshold)
       - name: Calculate Test Coverage
@@ -56,12 +63,7 @@ jobs:
             echo "Test coverage is above 80% ($COVERAGE%)"
           fi
 
-      # Step 6: Upload Report
-      - name: Upload report
-        uses: actions/upload-artifact@v3
-        with:
-          name: newman-report
-          path: newman-report.html
+ 
 
       # Step 7: Deploy Only if Coverage is Greater Than 80%
       - name: Deploy Application
