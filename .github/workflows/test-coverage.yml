@@ -3,10 +3,10 @@ name: Run Postman Collection with Coverage Check
 on:
   push:
     branches:
-      - test-coverag  # Run on pushes to the test-coverage branch
+      - test-coverage  # Run on pushes to the test-coverage branch
   pull_request:
     branches:
-      - test-coverag  # Run on pull requests targeting the test-coverage branch
+      - test-coverage  # Run on pull requests targeting the test-coverage branch
 
 jobs:
   postman_tests:
@@ -28,10 +28,12 @@ jobs:
         run: npm install -g newman newman-reporter-html
 
       # Step 4: Run the Postman collection and generate JSON report
-      - name: Run Postman Collection
+      - name: Run Postman Collection and Generate Report
         run: |
           npx newman run postman/sys-api-oauth.postman_collection.json \
+          -r html --reporter-html-export newman-report.html \
           --environment postman/sys-api-oauth.postman_environment.json \
+          --iteration-count 1 \  # Specify the number of iterations
        
       # Step 5: Calculate Test Coverage (Assuming 80% threshold)
       - name: Calculate Test Coverage
@@ -54,12 +56,12 @@ jobs:
             echo "Test coverage is above 80% ($COVERAGE%)"
           fi
 
-      # Step 6: Upload JSON Report as an Artifact
-      - name: Upload JSON Report
+      # Step 6: Upload Report
+      - name: Upload report
         uses: actions/upload-artifact@v3
         with:
-          name: newman-json-report
-          path: newman-report.json
+          name: newman-report
+          path: newman-report.html
 
       # Step 7: Deploy Only if Coverage is Greater Than 80%
       - name: Deploy Application
